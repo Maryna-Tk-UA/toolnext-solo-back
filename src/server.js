@@ -6,6 +6,7 @@ import { logger } from './middleware/logger.js';
 import { notFoundHandler } from './middleware/notFoundHandler.js';
 import { errorHandler } from './middleware/errorHandler.js';
 import toolsRoutes from './routes/toolsRoutes.js';
+import helmet from 'helmet';
 
 const app = express();
 const PORT = process.env.PORT ?? 3000;
@@ -13,6 +14,7 @@ const PORT = process.env.PORT ?? 3000;
 app.use(logger);
 app.use(express.json());
 app.use(cors());
+app.use(helmet());
 
 app.use(toolsRoutes);
 
