@@ -1,20 +1,28 @@
 import createHttpError from 'http-errors';
 import { Tool } from '../models/tool.js';
 
-export const getAllTools = async (req, res) => {
-  const tools = await Tool.find();
-  res.status(200).json(tools);
+export const getAllTools = async (req, res, next) => {
+  try {
+    const tools = await Tool.find();
+    res.status(200).json(tools);
+  } catch (error) {
+    next(error);
+  }
 };
 
-export const getToolById = async (req, res) => {
-  const { toolId } = req.params;
-  const tool = await Tool.findById(toolId);
+export const getToolById = async (req, res, next) => {
+  try {
+    const { toolId } = req.params;
+    const tool = await Tool.findById(toolId);
 
-  if (!tool) {
-    throw createHttpError(404, 'Інструмент не знайдено');
+    if (!tool) {
+      throw createHttpError(404, 'Інструмент не знайдено');
+    }
+
+    res.status(200).json(tool);
+  } catch (error) {
+    next(error);
   }
-
-  res.status(200).json(tool);
 };
 
 export const createTool = async (req, res) => {
@@ -52,10 +60,6 @@ export const updateTool = async (req, res) => {
 export const getUserTools = async (req, res, next) => {
   try {
     const { userId } = req.params;
-
-    if (!userId) {
-      throw createHttpError(400, 'Користувача не знайдено');
-    }
 
     const tools = await Tool.find({ owner: userId }).sort({ createdAt: -1 });
     // .populate() можливо

@@ -6,17 +6,24 @@ import {
   getToolById,
   updateTool,
 } from '../controllers/toolsController.js';
+import { celebrate } from 'celebrate';
+import {
+  createToolSchema,
+  getAllToolsSchema,
+  toolIdParamsSchema,
+  updateToolSchema,
+} from '../validations/toolsValidation.js';
 
 const router = Router();
 
-router.get('/', getAllTools);
+router.get('/', celebrate(getAllToolsSchema), getAllTools);
 
-router.get('/:toolId', getToolById);
+router.get('/:toolId', celebrate(toolIdParamsSchema), getToolById);
 
-router.post('/', createTool);
+router.post('/', celebrate(createToolSchema), createTool);
 
-router.delete('/:toolId', deleteTool);
+router.delete('/:toolId', celebrate(toolIdParamsSchema), deleteTool);
 
-router.patch('/:toolId', updateTool);
+router.patch('/:toolId', celebrate(updateToolSchema), updateTool);
 
 export default router;

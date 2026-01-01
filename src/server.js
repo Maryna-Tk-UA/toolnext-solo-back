@@ -11,6 +11,7 @@ import categoriesRoutes from './routes/categoriesRoutes.js';
 import feedbacksRoutes from './routes/feedbacksRoutes.js';
 import usersRoutes from './routes/usersRoutes.js';
 import helmet from 'helmet';
+import { errors } from 'celebrate';
 
 const app = express();
 const PORT = process.env.PORT ?? 3000;
@@ -27,7 +28,7 @@ app.use('/tools', toolsRoutes);
 app.use('/users', usersRoutes);
 
 app.use(notFoundHandler);
-
+app.use(errors());
 app.use(errorHandler);
 
 await connectMongoDB();

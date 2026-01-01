@@ -64,6 +64,7 @@ const toolSchema = new Schema(
     },
     rentalTerms: {
       type: String,
+      required: true,
     },
     bookedDates: {
       type: [bookedRangeSchema],

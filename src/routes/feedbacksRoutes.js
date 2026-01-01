@@ -3,11 +3,16 @@ import {
   createFeedback,
   getFeedbacks,
 } from '../controllers/feedbacksController.js';
+import { celebrate } from 'celebrate';
+import {
+  createFeedbackSchema,
+  getFeedbacksSchema,
+} from '../validations/feedbacksValidation.js';
 
 const router = Router();
 
-router.get('/', getFeedbacks);
+router.get('/', celebrate(getFeedbacksSchema), getFeedbacks);
 
-router.post('/', createFeedback);
+router.post('/', celebrate(createFeedbackSchema), createFeedback);
 
 export default router;

@@ -16,10 +16,6 @@ export const createBooking = async (req, res, next) => {
       endDate,
     } = req.body;
 
-    if (!userId || !toolId || !startDate || !endDate) {
-      throw createHttpError(400, 'Необхідні поля відсутні');
-    }
-
     const start = new Date(startDate);
     const end = new Date(endDate);
 
