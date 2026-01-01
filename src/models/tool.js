@@ -1,18 +1,38 @@
 import { model, Schema } from 'mongoose';
 
+const bookedRangeSchema = new Schema(
+  {
+    startDate: {
+      type: Date,
+      required: true,
+    },
+    endDate: {
+      type: Date,
+      required: true,
+    },
+    bookedBy: {
+      type: Schema.Types.ObjectId,
+      ref: 'User',
+    },
+    bookingId: {
+      type: Schema.Types.ObjectId,
+      ref: 'Booking',
+    },
+  },
+  { _id: false },
+);
+
 const toolSchema = new Schema(
   {
     owner: {
-      //додати посилання на user
-      type: String,
+      type: Schema.Types.ObjectId,
+      ref: 'User',
       required: true,
-      trim: true,
     },
     category: {
-      //додати посилання на category
-      type: String,
+      type: Schema.Types.ObjectId,
+      ref: 'Category',
       required: true,
-      trim: true,
     },
     name: {
       type: String,
@@ -38,24 +58,30 @@ const toolSchema = new Schema(
       type: Number,
     },
     specifications: {
-      //доробити під об'єкт
-      type: String,
-      trim: true,
+      type: Map,
+      of: String,
+      default: {},
     },
     rentalTerms: {
       type: String,
     },
     bookedDates: {
-      // доробити
-      type: [String],
+      type: [bookedRangeSchema],
+      default: [],
     },
     feedbacks: {
-      // доробити
-      type: [String],
+      type: [
+        {
+          type: Schema.Types.ObjectId,
+          ref: 'Feedback',
+        },
+      ],
+      default: [],
     },
   },
   {
     timestamps: true,
+    versionKey: false,
   },
 );
 

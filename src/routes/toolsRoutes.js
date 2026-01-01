@@ -9,14 +9,14 @@ import {
 
 const router = Router();
 
-router.get('/tools', getAllTools);
+router.get('/', getAllTools);
 
-router.get('/tools/:toolId', getToolById);
+router.get('/:toolId', getToolById);
 
-router.post('/tools', createTool);
+router.post('/', createTool);
 
-router.delete('/tools/:toolId', deleteTool);
+router.delete('/:toolId', deleteTool);
 
-router.patch('/tools/:toolId', updateTool);
+router.patch('/:toolId', updateTool);
 
 export default router;

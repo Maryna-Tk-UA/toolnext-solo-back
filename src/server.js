@@ -6,6 +6,10 @@ import { logger } from './middleware/logger.js';
 import { notFoundHandler } from './middleware/notFoundHandler.js';
 import { errorHandler } from './middleware/errorHandler.js';
 import toolsRoutes from './routes/toolsRoutes.js';
+import bookingsRoutes from './routes/bookingsRoutes.js';
+import categoriesRoutes from './routes/categoriesRoutes.js';
+import feedbacksRoutes from './routes/feedbacksRoutes.js';
+import usersRoutes from './routes/usersRoutes.js';
 import helmet from 'helmet';
 
 const app = express();
@@ -16,7 +20,11 @@ app.use(express.json());
 app.use(cors());
 app.use(helmet());
 
-app.use(toolsRoutes);
+app.use('/bookings', bookingsRoutes);
+app.use('/categories', categoriesRoutes);
+app.use('/feedbacks', feedbacksRoutes);
+app.use('/tools', toolsRoutes);
+app.use('/users', usersRoutes);
 
 app.use(notFoundHandler);
 

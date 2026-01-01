@@ -48,3 +48,20 @@ export const updateTool = async (req, res) => {
 
   res.status(200).json(tool);
 };
+
+export const getUserTools = async (req, res, next) => {
+  try {
+    const { userId } = req.params;
+
+    if (!userId) {
+      throw createHttpError(400, 'Користувача не знайдено');
+    }
+
+    const tools = await Tool.find({ owner: userId }).sort({ createdAt: -1 });
+    // .populate() можливо
+
+    res.status(200).json(tools);
+  } catch (error) {
+    next(error);
+  }
+};
