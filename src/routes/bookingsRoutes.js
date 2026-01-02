@@ -10,13 +10,24 @@ import {
   createBookingSchema,
   getUserBookingsSchema,
 } from '../validations/bookingsValidation.js';
+import { authenticate } from '../middleware/authenticate.js';
 
 const router = Router();
 
-router.post('/', celebrate(createBookingSchema), createBooking);
+router.post('/', authenticate, celebrate(createBookingSchema), createBooking);
 
-router.get('/:bookingId', celebrate(bookingIdParamsSchema), getBookingById);
+router.get(
+  '/:bookingId',
+  authenticate,
+  celebrate(bookingIdParamsSchema),
+  getBookingById,
+);
 
-router.get('/', celebrate(getUserBookingsSchema), getUserBookings);
+router.get(
+  '/',
+  authenticate,
+  celebrate(getUserBookingsSchema),
+  getUserBookings,
+);
 
 export default router;

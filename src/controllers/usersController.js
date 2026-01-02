@@ -4,7 +4,7 @@ import { User } from '../models/user.js';
 export const getUserById = async (req, res, next) => {
   try {
     const { userId } = req.params;
-    const user = await User.findById(userId);
+    const user = await User.findById(userId).select('name avatarUrl');
     if (!user) {
       throw createHttpError(404, 'Користувач не знайдений');
     }
@@ -14,9 +14,22 @@ export const getUserById = async (req, res, next) => {
   }
 };
 
+export const getCurrentUser = async (req, res, next) => {
+  try {
+    const userId = req.user._id;
+
+    const user = await User.findById(userId).select('name email avatarUrl');
+    if (!user) throw createHttpError(404, 'Користувач не знайдений');
+
+    res.status(200).json(user);
+  } catch (error) {
+    next(error);
+  }
+};
+
 export const updateUser = async (req, res, next) => {
   try {
-    const { userId } = req.params;
+    const userId = req.user._id;
     const allowedFields = ['name', 'avatarUrl'];
     const updateData = {};
     for (const key of allowedFields) {
@@ -31,7 +44,7 @@ export const updateUser = async (req, res, next) => {
 
     const updatedUser = await User.findByIdAndUpdate(userId, updateData, {
       new: true,
-    }).select('-password');
+    }).select('name email avatarUrl');
 
     if (!updatedUser) {
       throw createHttpError(404, 'Користувача не знайдено');

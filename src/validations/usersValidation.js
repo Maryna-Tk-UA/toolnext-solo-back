@@ -24,9 +24,8 @@ export const usersToolsSchema = {
 };
 
 export const updateUserSchema = {
-  ...userIdParamsSchema,
   [Segments.BODY]: Joi.object({
     name: Joi.string().min(2).max(64),
-    // avatarUrl: Joi.string().uri(),
+    avatarUrl: Joi.string().uri(),
   }).min(1),
 };

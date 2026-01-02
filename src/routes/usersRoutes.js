@@ -1,5 +1,9 @@
 import { Router } from 'express';
-import { getUserById, updateUser } from '../controllers/usersController.js';
+import {
+  getCurrentUser,
+  getUserById,
+  updateUser,
+} from '../controllers/usersController.js';
 import { getUserTools } from '../controllers/toolsController.js';
 import { celebrate } from 'celebrate';
 import {
@@ -7,13 +11,14 @@ import {
   userIdParamsSchema,
   usersToolsSchema,
 } from '../validations/usersValidation.js';
+import { authenticate } from '../middleware/authenticate.js';
 
 const router = Router();
 
+router.get('/current', authenticate, getCurrentUser);
+router.patch('/current', authenticate, celebrate(updateUserSchema), updateUser);
+
 router.get('/:userId/tools', celebrate(usersToolsSchema), getUserTools);
-
 router.get('/:userId', celebrate(userIdParamsSchema), getUserById);
-
-router.patch('/:userId', celebrate(updateUserSchema), updateUser);
 
 export default router;

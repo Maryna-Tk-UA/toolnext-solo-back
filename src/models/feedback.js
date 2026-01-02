@@ -5,12 +5,12 @@ const feedbackSchema = new Schema(
     toolId: {
       type: Schema.Types.ObjectId,
       ref: 'Tool',
-      required: false,
+      required: true,
     },
     userId: {
       type: Schema.Types.ObjectId,
       ref: 'User',
-      required: false,
+      required: true,
     },
     name: {
       type: String,

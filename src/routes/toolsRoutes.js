@@ -13,6 +13,7 @@ import {
   toolIdParamsSchema,
   updateToolSchema,
 } from '../validations/toolsValidation.js';
+import { authenticate } from '../middleware/authenticate.js';
 
 const router = Router();
 
@@ -20,10 +21,15 @@ router.get('/', celebrate(getAllToolsSchema), getAllTools);
 
 router.get('/:toolId', celebrate(toolIdParamsSchema), getToolById);
 
-router.post('/', celebrate(createToolSchema), createTool);
+router.post('/', authenticate, celebrate(createToolSchema), createTool);
 
-router.delete('/:toolId', celebrate(toolIdParamsSchema), deleteTool);
+router.delete(
+  '/:toolId',
+  authenticate,
+  celebrate(toolIdParamsSchema),
+  deleteTool,
+);
 
-router.patch('/:toolId', celebrate(updateToolSchema), updateTool);
+router.patch('/:toolId', authenticate, celebrate(updateToolSchema), updateTool);
 
 export default router;

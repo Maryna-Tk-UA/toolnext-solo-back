@@ -10,8 +10,10 @@ import bookingsRoutes from './routes/bookingsRoutes.js';
 import categoriesRoutes from './routes/categoriesRoutes.js';
 import feedbacksRoutes from './routes/feedbacksRoutes.js';
 import usersRoutes from './routes/usersRoutes.js';
+import authRoutes from './routes/authRoutes.js';
 import helmet from 'helmet';
 import { errors } from 'celebrate';
+import cookieParser from 'cookie-parser';
 
 const app = express();
 const PORT = process.env.PORT ?? 3000;
@@ -20,7 +22,9 @@ app.use(logger);
 app.use(express.json());
 app.use(cors());
 app.use(helmet());
+app.use(cookieParser());
 
+app.use('/auth', authRoutes);
 app.use('/bookings', bookingsRoutes);
 app.use('/categories', categoriesRoutes);
 app.use('/feedbacks', feedbacksRoutes);

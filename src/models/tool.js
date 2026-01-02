@@ -47,7 +47,6 @@ const toolSchema = new Schema(
     pricePerDay: {
       type: Number,
       required: true,
-      trim: true,
     },
     images: {
       type: String,

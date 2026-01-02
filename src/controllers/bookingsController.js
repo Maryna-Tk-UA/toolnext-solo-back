@@ -4,8 +4,9 @@ import { Tool } from '../models/tool.js';
 
 export const createBooking = async (req, res, next) => {
   try {
+    const userId = req.user._id;
+
     const {
-      userId,
       toolId,
       firstName,
       lastName,
@@ -84,7 +85,10 @@ export const getBookingById = async (req, res, next) => {
   try {
     const { bookingId } = req.params;
 
-    const booking = await Booking.findById(bookingId)
+    const booking = await Booking.findOne({
+      _id: bookingId,
+      userId: req.user._id,
+    })
       .populate('toolId', 'name images pricePerDay')
       .populate('userId', 'name email');
 
@@ -100,7 +104,7 @@ export const getBookingById = async (req, res, next) => {
 
 export const getUserBookings = async (req, res, next) => {
   try {
-    const { userId } = req.query;
+    const userId = req.user._id;
     const page = Number(req.query.page ?? 1);
     const perPage = Number(req.query.perPage ?? 10);
 
@@ -113,7 +117,7 @@ export const getUserBookings = async (req, res, next) => {
     const bookingsQuery = Booking.find({ userId })
       .sort({ startDate: -1 })
       .populate('toolId', 'name images pricePerDay')
-      .populate('userId', 'name email');
+      .populate('userId', 'name');
 
     const [totalItems, bookings] = await Promise.all([
       bookingsQuery.clone().countDocuments(),

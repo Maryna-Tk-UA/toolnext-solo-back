@@ -56,36 +56,61 @@ export const getToolById = async (req, res, next) => {
   }
 };
 
-export const createTool = async (req, res) => {
-  const tool = await Tool.create(req.body);
-  res.status(201).json(tool);
+// export const createTool = async (req, res) => {
+//   const tool = await Tool.create(req.body);
+//   res.status(201).json(tool);
+// };
+
+export const createTool = async (req, res, next) => {
+  try {
+    const tool = await Tool.create({
+      ...req.body,
+      owner: req.user._id,
+    });
+    res.status(201).json(tool);
+  } catch (error) {
+    next(error);
+  }
 };
 
-export const deleteTool = async (req, res) => {
-  const { toolId } = req.params;
-  const tool = await Tool.findOneAndDelete({
-    _id: toolId,
-  });
+export const deleteTool = async (req, res, next) => {
+  try {
+    const { toolId } = req.params;
+    const tool = await Tool.findOneAndDelete({
+      _id: toolId,
+      owner: req.user._id,
+    });
 
-  if (!tool) {
-    throw createHttpError(404, 'Інструмент не знайдено');
+    if (!tool) {
+      throw createHttpError(404, 'Інструмент не знайдено');
+    }
+
+    res.status(200).json(tool);
+  } catch (error) {
+    next(error);
   }
-
-  res.status(200).json(tool);
 };
 
-export const updateTool = async (req, res) => {
-  const { toolId } = req.params;
+export const updateTool = async (req, res, next) => {
+  try {
+    const { toolId } = req.params;
 
-  const tool = await Tool.findOneAndUpdate({ _id: toolId }, req.body, {
-    new: true,
-  });
+    const tool = await Tool.findOneAndUpdate(
+      { _id: toolId, owner: req.user._id },
+      req.body,
+      {
+        new: true,
+      },
+    );
 
-  if (!tool) {
-    throw createHttpError(404, 'Інструмент не знайдено');
+    if (!tool) {
+      throw createHttpError(404, 'Інструмент не знайдено');
+    }
+
+    res.status(200).json(tool);
+  } catch (error) {
+    next(error);
   }
-
-  res.status(200).json(tool);
 };
 
 export const getUserTools = async (req, res, next) => {

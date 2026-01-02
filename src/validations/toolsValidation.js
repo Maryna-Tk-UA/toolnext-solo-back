@@ -65,7 +65,9 @@ export const createToolSchema = {
 };
 
 export const updateToolSchema = {
-  ...toolIdParamsSchema,
+  [Segments.PARAMS]: Joi.object({
+    toolId: objectIdSchema.required(),
+  }),
   [Segments.BODY]: Joi.object({
     name: Joi.string().min(3).max(96),
     pricePerDay: Joi.number().min(0),
@@ -76,5 +78,5 @@ export const updateToolSchema = {
       specsObjectSchema,
       Joi.string().custom(jsonObjectValidator),
     ),
-  }),
+  }).min(1),
 };

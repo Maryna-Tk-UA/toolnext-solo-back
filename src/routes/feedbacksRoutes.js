@@ -8,11 +8,12 @@ import {
   createFeedbackSchema,
   getFeedbacksSchema,
 } from '../validations/feedbacksValidation.js';
+import { authenticate } from '../middleware/authenticate.js';
 
 const router = Router();
 
 router.get('/', celebrate(getFeedbacksSchema), getFeedbacks);
 
-router.post('/', celebrate(createFeedbackSchema), createFeedback);
+router.post('/', authenticate, celebrate(createFeedbackSchema), createFeedback);
 
 export default router;
