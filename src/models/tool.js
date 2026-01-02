@@ -86,4 +86,6 @@ const toolSchema = new Schema(
   },
 );
 
+toolSchema.index({ name: 'text', description: 'text' });
+
 export const Tool = model('Tool', toolSchema);

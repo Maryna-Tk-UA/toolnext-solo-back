@@ -5,11 +5,12 @@ import { celebrate } from 'celebrate';
 import {
   updateUserSchema,
   userIdParamsSchema,
+  usersToolsSchema,
 } from '../validations/usersValidation.js';
 
 const router = Router();
 
-router.get('/:userId/tools', celebrate(userIdParamsSchema), getUserTools);
+router.get('/:userId/tools', celebrate(usersToolsSchema), getUserTools);
 
 router.get('/:userId', celebrate(userIdParamsSchema), getUserById);
 

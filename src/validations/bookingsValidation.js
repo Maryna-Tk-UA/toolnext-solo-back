@@ -83,8 +83,16 @@ export const bookingIdParamsSchema = {
   }),
 };
 
+// export const getUserBookingsSchema = {
+//   [Segments.QUERY]: Joi.object({
+//     userId: objectIdSchema.required(),
+//   }),
+// };
+
 export const getUserBookingsSchema = {
   [Segments.QUERY]: Joi.object({
     userId: objectIdSchema.required(),
+    page: Joi.number().integer().min(1).default(1),
+    perPage: Joi.number().integer().min(5).max(20).default(10),
   }),
 };
