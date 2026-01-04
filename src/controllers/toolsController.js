@@ -1,5 +1,7 @@
 import createHttpError from 'http-errors';
 import { Tool } from '../models/tool.js';
+import { saveToolImageToCloudinary } from '../utils/saveFileToCloudinary.js';
+import { deleteFromCloudinary } from '../utils/deleteFromCloudinary.js';
 
 export const getAllTools = async (req, res, next) => {
   try {
@@ -67,7 +69,7 @@ export const createTool = async (req, res, next) => {
       ...req.body,
       owner: req.user._id,
     });
-    res.status(201).json(tool);
+    res.status(201).json({ tool, toolId: tool._id });
   } catch (error) {
     next(error);
   }
@@ -76,7 +78,7 @@ export const createTool = async (req, res, next) => {
 export const deleteTool = async (req, res, next) => {
   try {
     const { toolId } = req.params;
-    const tool = await Tool.findOneAndDelete({
+    const tool = await Tool.findOne({
       _id: toolId,
       owner: req.user._id,
     });
@@ -84,6 +86,16 @@ export const deleteTool = async (req, res, next) => {
     if (!tool) {
       throw createHttpError(404, 'Інструмент не знайдено');
     }
+
+    const publicId = `toolnext-app/tools/tool_${toolId}`;
+
+    try {
+      await deleteFromCloudinary(publicId);
+    } catch (error) {
+      void error;
+    }
+
+    await Tool.deleteOne({ _id: toolId });
 
     res.status(200).json(tool);
   } catch (error) {
@@ -138,6 +150,40 @@ export const getUserTools = async (req, res, next) => {
       totalPages,
       tools,
     });
+  } catch (error) {
+    next(error);
+  }
+};
+
+export const updateToolImage = async (req, res, next) => {
+  try {
+    if (!req.file) {
+      throw createHttpError(400, 'Файл відсутній');
+    }
+
+    const { toolId } = req.params;
+
+    const tool = await Tool.findOne({ _id: toolId, owner: req.user._id });
+    if (!tool) throw createHttpError(404, 'Інструмент не знайдено');
+
+    const oldPublicId = tool.imagePublicId;
+
+    const result = await saveToolImageToCloudinary(req.file.buffer, toolId);
+
+    const updatedTool = await Tool.findByIdAndUpdate(
+      toolId,
+      {
+        images: result.secure_url,
+        imagePublicId: result.public_id,
+      },
+      { new: true },
+    );
+
+    if (oldPublicId && oldPublicId !== result.public._id) {
+      await deleteFromCloudinary(oldPublicId);
+    }
+
+    res.status(200).json({ url: updatedTool.images });
   } catch (error) {
     next(error);
   }

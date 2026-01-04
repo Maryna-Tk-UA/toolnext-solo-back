@@ -1,5 +1,6 @@
 import createHttpError from 'http-errors';
 import { User } from '../models/user.js';
+import { saveUserAvatarToCloudinary } from '../utils/saveFileToCloudinary.js';
 
 export const getUserById = async (req, res, next) => {
   try {
@@ -30,7 +31,7 @@ export const getCurrentUser = async (req, res, next) => {
 export const updateUser = async (req, res, next) => {
   try {
     const userId = req.user._id;
-    const allowedFields = ['name', 'avatarUrl'];
+    const allowedFields = ['name'];
     const updateData = {};
     for (const key of allowedFields) {
       if (req.body[key] !== undefined) {
@@ -51,6 +52,28 @@ export const updateUser = async (req, res, next) => {
     }
 
     res.status(200).json(updatedUser);
+  } catch (error) {
+    next(error);
+  }
+};
+
+export const updateUserAvatar = async (req, res, next) => {
+  try {
+    if (!req.file) {
+      throw createHttpError(400, 'Файл відсутній');
+    }
+
+    const result = await saveUserAvatarToCloudinary(
+      req.file.buffer,
+      req.user._id,
+    );
+
+    const updatedUser = await User.findByIdAndUpdate(
+      req.user._id,
+      { avatarUrl: result.secure_url },
+      { new: true },
+    );
+    res.status(200).json({ url: updatedUser.avatarUrl });
   } catch (error) {
     next(error);
   }

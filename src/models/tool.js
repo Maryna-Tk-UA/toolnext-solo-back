@@ -50,8 +50,12 @@ const toolSchema = new Schema(
     },
     images: {
       type: String,
-      // required: true,
       trim: true,
+      default: '',
+    },
+    imagePublicId: {
+      type: String,
+      default: '',
     },
     rating: {
       type: Number,

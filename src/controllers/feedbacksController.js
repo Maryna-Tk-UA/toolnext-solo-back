@@ -60,7 +60,7 @@ export const createFeedback = async (req, res, next) => {
     });
 
     await Tool.findByIdAndUpdate(toolId, {
-      $push: { feedbacks: feedback._id },
+      $addToSet: { feedbacks: feedback._id },
     });
 
     res.status(201).json(feedback);
