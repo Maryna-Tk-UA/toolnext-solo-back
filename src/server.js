@@ -22,6 +22,7 @@ const PORT = process.env.PORT ?? 3000;
 
 app.use(logger);
 app.use(express.json());
+app.use('trust proxy', 1);
 app.use(
   cors({
     origin: [
