@@ -273,5 +273,5 @@ package.json scripts:
 
 ## Deployment (Render)
 
-- API Base URL: `<YOUR_RENDER_URL>`
-- Swagger: `<YOUR_RENDER_URL>/api-docs`
+- API Base URL: `https://toolnext-solo-back.onrender.com`
+- Swagger: `https://toolnext-solo-back.onrender.com/api-docs`
