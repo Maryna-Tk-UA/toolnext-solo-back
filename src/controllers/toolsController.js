@@ -58,11 +58,6 @@ export const getToolById = async (req, res, next) => {
   }
 };
 
-// export const createTool = async (req, res) => {
-//   const tool = await Tool.create(req.body);
-//   res.status(201).json(tool);
-// };
-
 export const createTool = async (req, res, next) => {
   try {
     const tool = await Tool.create({

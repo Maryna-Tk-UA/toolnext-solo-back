@@ -10,7 +10,7 @@ export const registerUser = async (req, res, next) => {
 
     const existingUser = await User.findOne({ email });
     if (existingUser) {
-      throw createHttpError(400, 'Email використовується');
+      throw createHttpError(409, 'Email використовується');
     }
 
     const hashedPassword = await bcrypt.hash(password, 10);
@@ -26,7 +26,7 @@ export const registerUser = async (req, res, next) => {
 
     setSessionCookies(res, newSession);
 
-    res.status(200).json(newUser);
+    res.status(201).json(newUser);
   } catch (error) {
     next(error);
   }
@@ -36,7 +36,7 @@ export const loginUser = async (req, res, next) => {
   try {
     const { email, password } = req.body;
 
-    const user = await User.findOne({ email });
+    const user = await User.findOne({ email }).select('+password');
     if (!user) {
       throw createHttpError(401, 'Невалідні данні');
     }
@@ -48,7 +48,7 @@ export const loginUser = async (req, res, next) => {
     }
 
     // видалення старої сесії користувача
-    await Session.deleteOne({ userUd: user._id });
+    await Session.deleteOne({ userId: user._id });
 
     // створення нової сесії
     const newSession = await createSession(user._id);

@@ -141,3 +141,8 @@ dist
 # Vite logs files
 vite.config.js.timestamp-*
 vite.config.ts.timestamp-*
+
+# Generated project tree files
+src-tree.txt
+*tree*.txt
+*structure*.txt

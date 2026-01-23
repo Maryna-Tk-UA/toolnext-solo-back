@@ -14,22 +14,35 @@ import authRoutes from './routes/authRoutes.js';
 import helmet from 'helmet';
 import { errors } from 'celebrate';
 import cookieParser from 'cookie-parser';
+import swaggerUi from 'swagger-ui-express';
+import { swaggerSpec } from './docs/swagger.js';
 
 const app = express();
 const PORT = process.env.PORT ?? 3000;
 
 app.use(logger);
 app.use(express.json());
-app.use(cors());
+app.use(
+  cors({
+    origin: [
+      'http://localhost:3000',
+      'http://localhost:3001',
+      process.env.FRONTEND_DOMAIN,
+    ],
+    credentials: true,
+  }),
+);
 app.use(helmet());
 app.use(cookieParser());
 
+app.use('/api-docs', swaggerUi.serve, swaggerUi.setup(swaggerSpec));
+
 app.use('/auth', authRoutes);
-app.use('/bookings', bookingsRoutes);
 app.use('/categories', categoriesRoutes);
-app.use('/feedbacks', feedbacksRoutes);
-app.use('/tools', toolsRoutes);
 app.use('/users', usersRoutes);
+app.use('/tools', toolsRoutes);
+app.use('/bookings', bookingsRoutes);
+app.use('/feedbacks', feedbacksRoutes);
 
 app.use(notFoundHandler);
 app.use(errors());
