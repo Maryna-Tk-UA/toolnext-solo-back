@@ -12,7 +12,9 @@ export const getAllTools = async (req, res, next) => {
 
     const skip = (page - 1) * perPage;
 
-    const toolsQuery = Tool.find();
+    const toolsQuery = Tool.find().select(
+      'name, pricePerDay rating images category',
+    );
 
     if (search.length > 0) {
       toolsQuery.where({ $text: { $search: search } });
