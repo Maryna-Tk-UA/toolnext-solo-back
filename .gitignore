@@ -146,3 +146,8 @@ vite.config.ts.timestamp-*
 src-tree.txt
 *tree*.txt
 *structure*.txt
+
+scripts_logs/
+scripts_logs/*.json
+
+src/backend/scripts/migrateFtpToCloudinary.mjs
