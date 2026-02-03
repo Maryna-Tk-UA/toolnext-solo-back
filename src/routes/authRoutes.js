@@ -10,6 +10,11 @@ import {
   refreshUserSession,
   registerUser,
 } from '../controllers/authController.js';
+import {
+  authLoginLimiter,
+  authRefreshLimiter,
+  authRegisterLimiter,
+} from '../middleware/rateLimiters.js';
 
 const router = Router();
 
@@ -51,7 +56,12 @@ const router = Router();
  *       409:
  *         description: Email already exists
  */
-router.post('/register', celebrate(registerUserSchema), registerUser);
+router.post(
+  '/register',
+  authRegisterLimiter,
+  celebrate(registerUserSchema),
+  registerUser,
+);
 
 /**
  * @openapi
@@ -81,7 +91,7 @@ router.post('/register', celebrate(registerUserSchema), registerUser);
  *       401:
  *         description: Invalid credentials
  */
-router.post('/login', celebrate(loginUserSchema), loginUser);
+router.post('/login', authLoginLimiter, celebrate(loginUserSchema), loginUser);
 
 /**
  * @openapi
@@ -111,6 +121,6 @@ router.post('/logout', logoutUser);
  *       401:
  *         description: Unauthorized
  */
-router.post('/refresh', refreshUserSession);
+router.post('/refresh', authRefreshLimiter, refreshUserSession);
 
 export default router;

@@ -7,6 +7,7 @@ import {
   setSessionCookies,
 } from '../services/auth.js';
 import { Session } from '../models/session.js';
+import { safeCompare } from '../utils/safeCompare.js';
 
 export const registerUser = async (req, res, next) => {
   try {
@@ -25,7 +26,6 @@ export const registerUser = async (req, res, next) => {
       password: hashedPassword,
     });
 
-    // створення нової сесії
     const newSession = await createSession(newUser._id);
 
     setSessionCookies(res, newSession);
@@ -83,12 +83,13 @@ export const logoutUser = async (req, res, next) => {
 
 export const refreshUserSession = async (req, res, next) => {
   try {
-    const session = await Session.findOne({
-      _id: req.cookies.sessionId,
-      refreshToken: req.cookies.refreshToken,
-    });
-
+    const session = await Session.findById(req.cookies.sessionId);
     if (!session) {
+      throw createHttpError(401, 'Сесії не знайдено');
+    }
+
+    const isValid = safeCompare(session.refreshToken, req.cookies.refreshToken);
+    if (!isValid) {
       throw createHttpError(401, 'Сесії не знайдено');
     }
 
@@ -99,10 +100,7 @@ export const refreshUserSession = async (req, res, next) => {
       throw createHttpError(401, 'Термін дії сесії минув');
     }
 
-    await Session.deleteOne({
-      _id: req.cookies.sessionId,
-      refreshToken: req.cookies.refreshToken,
-    });
+    await Session.deleteOne({ _id: session._id });
 
     const newSession = await createSession(session.userId);
     setSessionCookies(res, newSession);
