@@ -10,8 +10,8 @@ export const swaggerSpec = swaggerJsdoc({
     },
     servers: [
       {
-        url: 'http://localhost:3000',
-        description: 'Local server',
+        url: process.env.API_BASE_URL || 'http://localhost:3000',
+        description: 'API server',
       },
     ],
     tags: [

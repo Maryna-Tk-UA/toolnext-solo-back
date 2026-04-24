@@ -12,7 +12,22 @@ const router = Router();
  *       - Categories
  *     responses:
  *       200:
- *         description: OK
+ *         description: Categories list
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: array
+ *               items:
+ *                 type: object
+ *                 properties:
+ *                   _id:
+ *                     type: string
+ *                   title:
+ *                     type: string
+ *                   description:
+ *                     type: string
+ *                   keywords:
+ *                     type: string
  */
 router.get('/', getCategories);
 
